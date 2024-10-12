@@ -1,34 +1,35 @@
 import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import PointCloudViewer from './components/PointCloudViewer';
+import Sidebar from './components/Sidebar';
+import uploadLasFile from './lib/apis/uploadLasFile';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        await uploadLasFile(file);
+        // Optionally, you can refresh the list of uploaded files here
+        console.log('File uploaded and processed successfully.');
+      } catch (error) {
+        console.error('Error uploading and processing file:', error);
+      }
+    }
+  };
+
+  const handleViewFile = (fileId: string) => {
+    setSelectedFileId(fileId);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="h-screen flex">
+      <Sidebar onFileUpload={handleFileUpload} onViewFile={handleViewFile} />
+      {selectedFileId && <PointCloudViewer fileId={selectedFileId} />}
+    </div>
   );
 }
 
