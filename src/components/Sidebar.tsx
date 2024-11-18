@@ -1,15 +1,15 @@
 import React from 'react';
 import FileList from './FileList';
+import FileUpload from './FileUpload';
 
 interface ISidebar {
-  onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onViewFile: (fileId: string) => void;
 }
 
-const Sidebar: React.FC<ISidebar> = ({ onFileUpload, onViewFile }) => {
+const Sidebar: React.FC<ISidebar> = ({ onViewFile }) => {
   return (
     <div className="flex flex-col gap-3 w-1/5 h-full p-4 border-r-2">
-      <input type="file" accept=".las,.laz" onChange={onFileUpload} />
+      <FileUpload />
       <FileList onViewFile={onViewFile} />
     </div>
   );

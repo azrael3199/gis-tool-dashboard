@@ -1,6 +1,10 @@
+import { AxiosProgressEvent } from 'axios';
 import api from './config';
 
-const uploadLasFile = async (lasFile: File): Promise<void> => {
+const uploadLasFile = async (
+  lasFile: File,
+  onUploadProgress: (progressEvent: AxiosProgressEvent) => void = () => {}
+): Promise<void> => {
   const formData = new FormData();
   formData.append('file', lasFile);
 
@@ -8,6 +12,9 @@ const uploadLasFile = async (lasFile: File): Promise<void> => {
     const response = await api.post('/api/las/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        onUploadProgress(progressEvent);
       },
     });
 

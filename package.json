@@ -12,19 +12,23 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@cesium/engine": "^11.1.0",
     "@loaders.gl/core": "^4.2.3",
     "@loaders.gl/las": "^4.2.3",
     "@react-three/drei": "^9.112.0",
     "@react-three/fiber": "^8.17.6",
     "@xeokit/xeokit-sdk": "^2.6.41",
     "axios": "^1.7.7",
+    "cesium": "^1.122.0",
     "geographiclib-geodesic": "^2.1.1",
     "lodash": "^4.17.21",
     "proj4": "^2.12.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "resium": "^1.18.3",
     "tailwindcss-animate": "^1.0.7",
-    "three": "^0.168.0"
+    "three": "^0.168.0",
+    "vite-plugin-cesium": "^1.2.23"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

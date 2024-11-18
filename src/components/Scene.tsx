@@ -49,7 +49,7 @@ const Scene: React.FC<SceneProps> = ({ fileId }) => {
         );
         geometryRef.current.setAttribute(
           'color',
-          new BufferAttribute(new Float32Array(colorsRef.current), 3, true)
+          new BufferAttribute(new Uint8Array(colorsRef.current), 3, true)
         );
         geometryRef.current.computeBoundingSphere();
       } else if (type === 'error') {
@@ -137,7 +137,7 @@ const Scene: React.FC<SceneProps> = ({ fileId }) => {
       {pointCount > 0 && (
         <points geometry={geometryRef.current}>
           <pointsMaterial
-            size={0.1}
+            size={0.05}
             vertexColors
             sizeAttenuation={true}
             transparent={false}
@@ -151,6 +151,7 @@ const Scene: React.FC<SceneProps> = ({ fileId }) => {
           handleCameraChange((event.target as any).object as Camera);
         }}
       />
+      <gridHelper args={[1000, 1000]} />
     </Canvas>
   );
 };

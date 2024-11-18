@@ -28,7 +28,7 @@ wss.on('connection', function connection(client) {
           y: { $gte: min.y, $lte: max.y },
           z: { $gte: min.z, $lte: max.z },
         })
-          .batchSize(10000)
+          .batchSize(12000)
           .lean()
           .cursor();
 

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Cesium Viewer</title>
+      <script src="https://cesium.com/downloads/cesiumjs/releases/1.122/Build/Cesium/Cesium.js"></script>
+      <link href="https://cesium.com/downloads/cesiumjs/releases/1.122/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+      <style>
+        html, body, #cesiumContainer { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+        canvas { display: block; } /* Prevent scrollbar */
+      </style>
+    </head>
+    <body>
+      <div id="cesiumContainer"></div>
+      <script type="module">
+	    // document.addEventListener("DOMContentLoaded", async function() {
+        console.log('Cesium Viewer Loaded');
+        Cesium.debug = true
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+          terrainProvider: await Cesium.createWorldTerrainAsync(),
+        });
+        Cesium.Resource.prototype.fetch = (function(originalFetch) {
+          return function(...args) {
+            console.log('Cesium is requesting:', this.url);
+            return originalFetch.apply(this, args);
+          };
+        })(Cesium.Resource.prototype.fetch);
+
+        try {
+          const tilesetUrl = `http://localhost:5000/tileset/dd399042-a2a9-442a-84b3-ced602869a2c/tileset.json`;
+          console.log('Tileset URL:', tilesetUrl);
+          const tileset = viewer.scene.primitives.add(await Cesium.Cesium3DTileset.fromUrl(tilesetUrl));
+          
+          // Fly the camera to the tileset's bounding sphere
+          viewer.zoomTo(tileset).then(function() {
+            // Once the camera has moved, set up event listeners
+
+            // Event listener for all tiles loaded
+            tileset.allTilesLoaded.addEventListener(function() {
+              console.log('Tileset loaded successfully');
+              viewer.scene.globe.depthTestAgainstTerrain = true;
+              viewer.scene.globe.maximumScreenSpaceError = 0.5;
+              viewer.scene.debugShowFramesPerSecond = true;
+            },
+            function (error) {
+              console.error('Tileset failed to load:', error);
+            });
+
+            // Event listener for individual tile load
+            tileset.tileLoad.addEventListener(function(tile) {
+              console.log('Tile loaded:', tile);
+            });
+
+            // Event listener for tile load failures
+            tileset.tileFailed.addEventListener(function(error) {
+              console.error('Tile failed to load:', error);
+            });
+
+            // Event listener for load progress
+            tileset.loadProgress.addEventListener(function(numberOfPendingRequests, numberOfTilesProcessing) {
+              if ((numberOfPendingRequests === 0) && (numberOfTilesProcessing === 0)) {
+                console.log('Stopped loading');
+                return;
+              }
+              console.log(`Loading: requests: ${numberOfPendingRequests}, processing: ${numberOfTilesProcessing}`);
+            });
+          });
+        } catch (error) {
+          console.error('Error loading tileset 2:', error);
+        }
+	    // });
+      </script>
+    </body>
+    </html>;

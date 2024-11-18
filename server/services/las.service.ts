@@ -18,6 +18,9 @@ export const processLasFile = async (file: any) => {
     const colors = new Uint8Array(attributes.COLOR_0.value);
     const intensities = new Float32Array(attributes.intensity?.value || []);
 
+    console.log(attributes);
+    console.log(colors);
+
     // Process data (convert positions, colors, etc.)
     const { points, pointColors } = processData({
       positions,
